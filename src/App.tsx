@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
@@ -8,6 +8,12 @@ import Header from './components/Header';
 import { CartProvider } from './hooks/useCart';
 
 const App = (): JSX.Element => {
+
+
+
+
+
+
   return (
     <BrowserRouter>
       <CartProvider>

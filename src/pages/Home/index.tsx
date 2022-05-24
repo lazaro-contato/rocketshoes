@@ -5,6 +5,7 @@ import { ProductList } from './styles';
 import { api } from '../../services/api';
 import { formatPrice } from '../../util/format';
 import { useCart } from '../../hooks/useCart';
+import axios from "axios";
 
 interface Product {
   id: number;
@@ -22,44 +23,58 @@ interface CartItemsAmount {
 }
 
 const Home = (): JSX.Element => {
-  // const [products, setProducts] = useState<ProductFormatted[]>([]);
-  // const { addProduct, cart } = useCart();
+  const [products, setProducts] = useState<ProductFormatted[]>([]);
+  const [stock, setStock] = useState<ProductFormatted[]>([]);
+  const { addProduct, cart } = useCart();
 
-  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
-  //   // TODO
-  // }, {} as CartItemsAmount)
+  localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart))
+
 
   useEffect(() => {
     async function loadProducts() {
-      // TODO
+      axios.get('http://localhost:3333/products')
+        .then((response) => {
+          setProducts(response.data)
+        })
     }
-
     loadProducts();
   }, []);
 
-  function handleAddProduct(id: number) {
-    // TODO
-  }
 
-  return (
-    <ProductList>
-      <li>
-        <img src="https://rocketseat-cdn.s3-sa-east-1.amazonaws.com/modulo-redux/tenis1.jpg" alt="Tênis de Caminhada Leve Confortável" />
-        <strong>Tênis de Caminhada Leve Confortável</strong>
-        <span>R$ 179,90</span>
+  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
+  // }, {} as CartItemsAmount)
+  //
+  // function handleAddProduct(id: number) {
+  //   // TODO
+  // }
+
+
+
+  const renderItems = (item: ProductFormatted) => {
+    return(
+      <li key={item.id}>
+        <img src={item.image} />
+        <strong>{item.title}</strong>
+        <span>{formatPrice(item.price)}</span>
         <button
           type="button"
           data-testid="add-product-button"
-        // onClick={() => handleAddProduct(product.id)}
+          // onClick={() => handleAddProduct(product.id)}
         >
           <div data-testid="cart-product-quantity">
             <MdAddShoppingCart size={16} color="#FFF" />
-            {/* {cartItemsAmount[product.id] || 0} */} 2
+            {/*{cartItemsAmount[product.id] || 0}*/}
           </div>
 
           <span>ADICIONAR AO CARRINHO</span>
         </button>
       </li>
+    )
+  }
+
+  return (
+    <ProductList>
+      {products.map((item) => renderItems(item))}
     </ProductList>
   );
 };
