@@ -1,7 +1,8 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import { toast } from 'react-toastify';
 import { api } from '../services/api';
 import { Product, Stock } from '../types';
+import axios from "axios";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -22,12 +23,22 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
-  const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
+  useEffect(() => {
+    async function loadProducts() {
+      axios.get('http://localhost:3333/stock')
+        .then((response) => {
+          const cart = JSON.stringify(response.data)
+          localStorage.setItem('@RocketShoes:cart', cart)
+        })
+    }
+    loadProducts();
+  },[])
 
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
+  const [cart, setCart] = useState<Product[]>(() => {
+    const storagedCart = localStorage.getItem('@RocketShoes:cart');
+    if (storagedCart) {
+      return JSON.parse(storagedCart);
+    }
 
     return [];
   });

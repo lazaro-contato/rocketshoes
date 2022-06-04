@@ -9,11 +9,6 @@ import { CartProvider } from './hooks/useCart';
 
 const App = (): JSX.Element => {
 
-
-
-
-
-
   return (
     <BrowserRouter>
       <CartProvider>
