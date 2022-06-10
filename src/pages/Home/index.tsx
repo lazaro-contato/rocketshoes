@@ -7,14 +7,14 @@ import { formatPrice } from '../../util/format';
 import { useCart } from '../../hooks/useCart';
 import axios from "axios";
 
-interface Product {
+export interface Product {
   id: number;
   title: string;
   price: number;
   image: string;
 }
 
-interface ProductFormatted extends Product {
+export interface ProductFormatted extends Product {
   priceFormatted: string;
 }
 
@@ -36,17 +36,28 @@ const Home = (): JSX.Element => {
         .then((response) => {
           setProducts(response.data)
         })
+      axios.get('http://localhost:3333/stock')
+        .then((response) => {
+          setStock(response.data)
+        })
     }
     loadProducts();
   }, []);
 
 
-  // const cartItemsAmount = cart.reduce((sumAmount, product) => {
-  // }, {} as CartItemsAmount)
-  //
-  // function handleAddProduct(id: number) {
-  //   // TODO
-  // }
+  const cartItemsAmount = cart.reduce((sumAmount, product) => {
+   const newSumAmount = {...sumAmount}
+    newSumAmount[product.id] = product.amount
+    return newSumAmount
+  }, {} as CartItemsAmount)
+
+  function handleAddProduct(id: number) {
+    addProduct(id)
+
+  }
+
+
+
 
 
 
@@ -59,11 +70,11 @@ const Home = (): JSX.Element => {
         <button
           type="button"
           data-testid="add-product-button"
-          // onClick={() => handleAddProduct(product.id)}
+          onClick={() => handleAddProduct(item.id)}
         >
           <div data-testid="cart-product-quantity">
             <MdAddShoppingCart size={16} color="#FFF" />
-            {/*{cartItemsAmount[product.id] || 0}*/}
+            {cartItemsAmount[item.id] || 0}
           </div>
 
           <span>ADICIONAR AO CARRINHO</span>
