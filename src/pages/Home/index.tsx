@@ -32,16 +32,14 @@ const Home = (): JSX.Element => {
 
   useEffect(() => {
     async function loadProducts() {
-      axios.get('http://localhost:3333/products')
-        .then((response) => {
-          setProducts(response.data)
-        })
-      axios.get('http://localhost:3333/stock')
-        .then((response) => {
-          setStock(response.data)
-        })
+      const response = await api.get<Product[]>('products')
+      const data = response.data.map(product => ({
+        ...product,
+        priceFormatted: formatPrice(product.price)
+      }))
+      setProducts(data)
     }
-    loadProducts();
+    loadProducts()
   }, []);
 
 
@@ -55,11 +53,6 @@ const Home = (): JSX.Element => {
     addProduct(id)
 
   }
-
-
-
-
-
 
   const renderItems = (item: ProductFormatted) => {
     return(
