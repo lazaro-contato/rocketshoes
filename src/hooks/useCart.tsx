@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { api } from '../services/api';
 import { Product, Stock } from '../types';
 import axios from "axios";
+import {formatPrice} from "../util/format";
 
 interface CartProviderProps {
   children: ReactNode;
@@ -23,16 +24,6 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
-  useEffect(() => {
-    async function loadProducts() {
-      axios.get('http://localhost:3333/stock')
-        .then((response) => {
-          const cart = JSON.stringify(response.data)
-          localStorage.setItem('@RocketShoes:cart', cart)
-        })
-    }
-    loadProducts();
-  },[])
 
   const prevCartRef = useRef<Product[]>()
 
@@ -79,7 +70,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
 
     } catch {
-      toast.error('Quantidade solicitada fora de estoque');
+      toast.error('Erro na adição do produto');
     }
   };
 

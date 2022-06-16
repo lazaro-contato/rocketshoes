@@ -27,9 +27,6 @@ const Home = (): JSX.Element => {
   const [stock, setStock] = useState<ProductFormatted[]>([]);
   const { addProduct, cart } = useCart();
 
-  localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart))
-
-
   useEffect(() => {
     async function loadProducts() {
       const response = await api.get<Product[]>('products')
@@ -46,6 +43,7 @@ const Home = (): JSX.Element => {
   const cartItemsAmount = cart.reduce((sumAmount, product) => {
    const newSumAmount = {...sumAmount}
     newSumAmount[product.id] = product.amount
+    console.log(newSumAmount)
     return newSumAmount
   }, {} as CartItemsAmount)
 
